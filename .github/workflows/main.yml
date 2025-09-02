@@ -1,0 +1,33 @@
+name: Deploy to Salesforce Sandbox
+
+on:
+  push:
+    branches: [ "main" ]   # change if your main branch is named differently
+  workflow_dispatch:       # lets you run it by hand from the Actions tab
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out source
+        uses: actions/checkout@v4
+
+      # Install Salesforce CLI (SFDX). This action also supports logging in via an auth URL.
+      - name: Setup SFDX CLI
+        uses: sfdx-actions/setup-sfdx@v1
+        with:
+          sfdx-auth-url: ${{ secrets.SFDX_AUTH_URL }}
+
+      # OPTIONAL: If you prefer, you can store the auth from the secret yourself:
+      # - run: |
+      #     echo "${{ secrets.SFDX_AUTH_URL }}" > ./auth_url.txt
+      #     sfdx auth:sfdxurl:store -f ./auth_url.txt -s -a Sandbox
+
+      - name: Show org (sanity check)
+        run: sfdx force:org:display
+
+      # Deploy the DX source in 'force-app' to the sandbox.
+      # (No tests needed for a sandbox; for production you'd run RunLocalTests)
+      - name: Deploy to sandbox
+        run: sfdx force:source:deploy -p force-app -w 33 -l NoTestRun
