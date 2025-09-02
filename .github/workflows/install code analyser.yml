@@ -1,0 +1,3 @@
+- name: Install Salesforce Code Analyzer
+  run: |
+    npm install @salesforce/sfdx-scanner --global
