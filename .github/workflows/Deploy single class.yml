@@ -1,0 +1,41 @@
+name: Deploy single class
+
+on:
+  workflow_dispatch:
+    inputs:
+      class_name:
+        description: "Apex class name (no .cls)"
+        required: true
+        type: string
+      test_class:
+        description: "Optional test class name for RunSpecifiedTests"
+        required: false
+        type: string
+
+jobs:
+  deploy_one_class:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: sfdx-actions/setup-sfdx@v1
+        with:
+          sfdx-auth-url: ${{ secrets.SFDX_AUTH_URL }}  # your target sandbox secret
+
+      - name: Show org
+        run: sfdx force:org:display
+
+      - name: Deploy class (No tests if not provided)
+        run: |
+          if [ -n "${{ github.event.inputs.test_class }}" ]; then
+            sfdx force:source:deploy \
+              -m "ApexClass:${{ github.event.inputs.class_name }}" \
+              -l RunSpecifiedTests \
+              -r "${{ github.event.inputs.test_class }}" \
+              -w 20
+          else
+            sfdx force:source:deploy \
+              -m "ApexClass:${{ github.event.inputs.class_name }}" \
+              -l NoTestRun \
+              -w 20
+          fi
