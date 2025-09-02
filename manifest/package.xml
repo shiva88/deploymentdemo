@@ -10,5 +10,17 @@
         <members>*</members>
         <name>ApexClass</name>
     </types>
+    <types>
+  <members>*</members>
+  <name>CustomObject</name>
+</types>
+<types>
+  <members>*</members>
+  <name>Flow</name>
+</types>
+<types>
+  <members>*</members>
+  <name>FlowDefinition</name>
+</types>
     <version>64.0</version>
 </Package>
