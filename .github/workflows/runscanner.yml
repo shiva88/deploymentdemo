@@ -1,0 +1,7 @@
+- name: Run Code Scan
+  run: |
+    sfdx scanner:run \
+      --format csv \
+      --target "force-app/main/default/classes/**/*.cls" \
+      --engine pmd \
+      --outfile code-scan-results.csv
